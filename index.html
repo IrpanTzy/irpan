@@ -4,83 +4,415 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nita Indramayu</title>
-  <!-- Menghubungkan ke file CSS -->
-  <link rel="stylesheet" href="style.css">
+  <title>Petualangan Nita - Game Platformer</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;600;800&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #fff;
+      overflow-x: hidden;
+      touch-action: none;
+    }
+
+    .pixel-font {
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    canvas {
+      background: linear-gradient(to bottom, #38bdf8 0%, #bae6fd 60%, #86efac 100%);
+      box-shadow: 0 15px 35px rgba(56, 189, 248, 0.3);
+      border-radius: 16px;
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+      border: 3px solid #0284c7;
+    }
+  </style>
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col items-center justify-between p-2 md:p-6">
 
-  <!-- 1. Menu Navigasi di Bagian Atas -->
-  <nav class="navbar">
-    <div class="logo">MyWebsite</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Beranda</a></li>
-      <li><a href="tentang.html">Tentang</a></li>
-      <li><a href="#">Kontak</a></li>
-    </ul>
-  </nav>
+  <!-- Header Judul Game -->
+  <header class="text-center my-1 md:my-2">
+    <h1 class="pixel-font text-base md:text-2xl text-yellow-300 drop-shadow-[0_2px_12px_rgba(234,179,8,0.7)]">
+      🌲 PETUALANGAN NITA 🌲
+    </h1>
+    <p class="text-xs md:text-sm text-sky-200 mt-1 font-semibold">Jelajahi dunia, kumpulkan bintang, dan hindari
+      rintangan!</p>
+  </header>
 
-  <!-- 2. Konten Utama -->
-  <h1>Halo, Nita!</h1>
-  <p>Selamat datang di Patrol.</p>
+  <!-- Area Permainan Utama -->
+  <main class="relative w-full max-w-[850px] flex flex-col items-center">
 
-  <!-- 3. Gambar Profil -->
-  <img src="https://www.shutterstock.com/image-photo/wet-plate-photo-monkey-middle-260nw-2752597095.jpg">
-
-  <br><br>
-
-  <!-- 4. Tombol Link Eksternal -->
-  <a href="https://google.com" target="_blank">
-    <button>Kunjungi Google</button>
-  </a>
-
-  <!-- 5. Bagian Kartu / Flexbox Layout -->
-  <section class="container-konten">
-    <div class="card">
-      <h3>Nama</h3>
-      <p>Nita Fadilah Putri.</p>
+    <!-- Panel HUD / Status Permainan -->
+    <div
+      class="w-full grid grid-cols-3 gap-2 mb-2 px-4 py-2 bg-gray-900/90 backdrop-blur-md rounded-xl border border-sky-500/40 text-xs md:text-sm font-bold shadow-lg">
+      <div>NYAWA: <span id="livesVal" class="text-red-500 pixel-font">❤️❤️❤️</span></div>
+      <div class="text-center">BINTANG: <span id="starsVal" class="text-yellow-400 pixel-font">0</span></div>
+      <div class="text-right">SKOR: <span id="scoreVal" class="text-green-400 pixel-font">0</span></div>
     </div>
-    <div class="card">
-      <h3>Umur</h3>
-      <p>25.</p>
-    </div>
-    <div class="card">
-      <h3>Alamat</h3>
-      <p>Patrol.</p>
-    </div>
-  </section>
 
-  <!-- 6. Tombol Interaktif JavaScript -->
-  <div style="text-align: center; margin-top: 20px;">
-    <button onclick="sapaPengunjung()">Klik untuk Pesan Interaktif</button>
-  </div>
+    <!-- Kanvas Game -->
+    <div class="relative w-full flex justify-center">
+      <canvas id="gameCanvas" width="850" height="420"></canvas>
 
-  <!-- 7. Formulir Kontak -->
-  <section class="form-container">
-    <h2>Hubungi Kami</h2>
-    <form>
-      <div class="form-group">
-        <label for="nama">Nama Lengkap:</label>
-        <input type="text" id="nama" name="nama" placeholder="Masukkan nama kamu...">
+      <!-- Overlay Mulai -->
+      <div id="startOverlay"
+        class="absolute inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center rounded-2xl p-6 text-center z-20">
+        <div
+          class="w-16 h-16 mb-3 bg-yellow-500/30 border border-yellow-400 rounded-full flex items-center justify-center animate-bounce">
+          <span class="text-2xl">⭐</span>
+        </div>
+        <h2 class="pixel-font text-lg md:text-xl text-yellow-300 mb-2">SIAP BERPETUALANG?</h2>
+        <p class="text-xs md:text-sm text-gray-300 max-w-md mb-6 leading-relaxed">
+          Bantu <strong class="text-pink-400">Nita</strong> melewati platform, melompati rintangan berbahaya, dan
+          kumpulkan semua bintang emas!
+        </p>
+        <button onclick="startGame()"
+          class="pixel-font bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-gray-900 font-bold py-3 px-8 rounded-xl shadow-[0_0_20px_rgba(234,179,8,0.6)] transform transition active:scale-95 text-xs md:text-sm border border-yellow-300">
+          MULAI PETUALANGAN 🚀
+        </button>
       </div>
 
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Masukkan email kamu...">
+      <!-- Overlay Game Over / Selesai -->
+      <div id="endOverlay"
+        class="absolute inset-0 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center rounded-2xl p-6 text-center hidden z-20">
+        <h2 id="endTitle" class="pixel-font text-2xl md:text-3xl text-red-500 mb-2 animate-bounce">GAME OVER</h2>
+        <p id="endDesc" class="text-xs md:text-sm text-gray-300 mb-2">Nita terjatuh dalam petualangan!</p>
+        <p class="text-base font-bold text-yellow-400 mb-6">Skor Akhir: <span id="finalScore"
+            class="pixel-font">0</span></p>
+        <button onclick="resetGame()"
+          class="pixel-font bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg transform transition active:scale-95 text-xs md:text-sm border border-green-400">
+          COBA LAGI 🔄
+        </button>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="pesan">Pesan:</label>
-        <textarea id="pesan" name="pesan" rows="4" placeholder="Tulis pesan kamu di sini..."></textarea>
-      </div>
+    <!-- Tombol Kontrol Virtual untuk HP / Sentuhan -->
+    <div class="w-full mt-3 grid grid-cols-3 gap-3 md:hidden">
+      <button id="leftBtn" class="py-4 bg-gray-800 active:bg-sky-600 text-white rounded-xl font-bold text-sm shadow">⬅️
+        KIRI</button>
+      <button id="jumpBtn"
+        class="py-4 bg-sky-600 active:bg-sky-700 text-white rounded-xl font-bold text-sm shadow pixel-font">LOMPAT
+        🦘</button>
+      <button id="rightBtn"
+        class="py-4 bg-gray-800 active:bg-sky-600 text-white rounded-xl font-bold text-sm shadow">KANAN ➡️</button>
+    </div>
+  </main>
 
-      <button type="submit" class="btn-kirim">Kirim Pesan</button>
-    </form>
-  </section>
+  <!-- Footer Panduan -->
+  <footer class="text-center text-[10px] md:text-xs text-sky-300 mt-2">
+    <p>Keyboard: <kbd class="bg-gray-800 px-1.5 py-0.5 rounded">A</kbd><kbd
+        class="bg-gray-800 px-1.5 py-0.5 rounded">D</kbd> / Panah (Gerak) | <kbd
+        class="bg-gray-800 px-1.5 py-0.5 rounded">Spasi</kbd> / <kbd class="bg-gray-800 px-1.5 py-0.5 rounded">W</kbd>
+      (Lompat)</p>
+  </footer>
 
-  <!-- Hubungkan file JavaScript (ditaruh sebelum tag penutup body) -->
-  <script src="script.js"></script>
+  <!-- Skrip Game Petualangan Nita -->
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Elemen UI
+    const startOverlay = document.getElementById("startOverlay");
+    const endOverlay = document.getElementById("endOverlay");
+    const endTitle = document.getElementById("endTitle");
+    const endDesc = document.getElementById("endDesc");
+    const finalScoreEl = document.getElementById("finalScore");
+
+    const livesValEl = document.getElementById("livesVal");
+    const starsValEl = document.getElementById("starsVal");
+    const scoreValEl = document.getElementById("scoreVal");
+
+    const leftBtn = document.getElementById("leftBtn");
+    const rightBtn = document.getElementById("rightBtn");
+    const jumpBtn = document.getElementById("jumpBtn");
+
+    // Status Game
+    let gameRunning = false;
+    let score = 0;
+    let starsCollected = 0;
+    let lives = 3;
+    let cameraX = 0;
+
+    // Karakter Utama: Nita
+    const nita = {
+      x: 100,
+      y: 200,
+      width: 38,
+      height: 55,
+      vx: 0,
+      vy: 0,
+      speed: 4.5,
+      jumpPower: -12,
+      gravity: 0.6,
+      isGrounded: false,
+      draw() {
+        // Nama di atas karakter Nita
+        ctx.font = 'bold 11px "Outfit", sans-serif';
+        ctx.fillStyle = "#ffffff";
+        ctx.shadowColor = "#000";
+        ctx.shadowBlur = 4;
+        ctx.textAlign = "center";
+        ctx.fillText("NITA", this.x - cameraX + this.width / 2, this.y - 8);
+        ctx.shadowBlur = 0;
+
+        // Kepala Nita & Rambut Kuncir
+        ctx.fillStyle = "#ffdbac";
+        ctx.fillRect(this.x - cameraX + 8, this.y + 4, 22, 20);
+        ctx.fillStyle = "#8b4513";
+        ctx.fillRect(this.x - cameraX + 4, this.y, 26, 8);
+        ctx.fillRect(this.x - cameraX + 22, this.y + 6, 10, 16);
+
+        // Badan / Baju Petualang Nita (Pink Cerah)
+        ctx.fillStyle = "#ec4899";
+        ctx.fillRect(this.x - cameraX + 7, this.y + 24, 24, 20);
+
+        // Celana / Rok
+        ctx.fillStyle = "#0284c7";
+        ctx.fillRect(this.x - cameraX + 7, this.y + 44, 24, 11);
+
+        // Kaki
+        ctx.fillStyle = "#1e293b";
+        ctx.fillRect(this.x - cameraX + 9, this.y + 55, 7, 5);
+        ctx.fillRect(this.x - cameraX + 22, this.y + 55, 7, 5);
+      },
+      update() {
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Batas kiri peta
+        if (this.x < 0) this.x = 0;
+
+        // Jatuh ke jurang / bawah layar
+        if (this.y > canvas.height + 50) {
+          loseLife();
+        }
+      },
+      jump() {
+        if (this.isGrounded) {
+          this.vy = this.jumpPower;
+          this.isGrounded = false;
+        }
+      }
+    };
+
+    // Peta Platform (Tanah & Kotak Pijakan)
+    let platforms = [
+      {x: 0, y: 360, width: 1000, height: 60, type: 'ground'},
+      {x: 300, y: 270, width: 140, height: 20, type: 'platform'},
+      {x: 550, y: 200, width: 160, height: 20, type: 'platform'},
+      {x: 800, y: 260, width: 150, height: 20, type: 'platform'},
+      {x: 1050, y: 360, width: 900, height: 60, type: 'ground'},
+      {x: 1250, y: 260, width: 140, height: 20, type: 'platform'},
+      {x: 1500, y: 180, width: 160, height: 20, type: 'platform'},
+      {x: 1800, y: 360, width: 1000, height: 60, type: 'ground'},
+      {x: 2050, y: 270, width: 150, height: 20, type: 'platform'},
+      {x: 2350, y: 210, width: 160, height: 20, type: 'platform'}
+    ];
+
+    // Bintang Koleksi
+    let stars = [
+      {x: 350, y: 220, collected: false},
+      {x: 610, y: 150, collected: false},
+      {x: 860, y: 210, collected: false},
+      {x: 1300, y: 210, collected: false},
+      {x: 1570, y: 130, collected: false},
+      {x: 2120, y: 220, collected: false},
+      {x: 2410, y: 160, collected: false}
+    ];
+
+    // Rintangan Musuh / Paku
+    let obstacles = [
+      {x: 450, y: 330, width: 35, height: 30, type: 'spike'},
+      {x: 1150, y: 330, width: 35, height: 30, type: 'spike'},
+      {x: 1400, y: 330, width: 35, height: 30, type: 'spike'},
+      {x: 1950, y: 330, width: 35, height: 30, type: 'spike'}
+    ];
+
+    function resetLevel() {
+      nita.x = 100;
+      nita.y = 200;
+      nita.vx = 0;
+      nita.vy = 0;
+      cameraX = 0;
+    }
+
+    function startGame() {
+      startOverlay.classList.add("hidden");
+      endOverlay.classList.add("hidden");
+      score = 0;
+      starsCollected = 0;
+      lives = 3;
+      stars.forEach(s => s.collected = false);
+      updateHUD();
+      resetLevel();
+      gameRunning = true;
+      loop();
+    }
+
+    function resetGame() {
+      startGame();
+    }
+
+    function loseLife() {
+      lives--;
+      updateHUD();
+      if (lives <= 0) {
+        endGame(false);
+      } else {
+        resetLevel();
+      }
+    }
+
+    function updateHUD() {
+      livesValEl.innerText = "❤️".repeat(Math.max(0, lives));
+      starsValEl.innerText = starsCollected;
+      scoreValEl.innerText = score;
+    }
+
+    function endGame(isWin) {
+      gameRunning = false;
+      if (isWin) {
+        endTitle.innerText = "YAY, MENANG! 🎉";
+        endTitle.className = "pixel-font text-2xl md:text-3xl text-yellow-300 mb-2 animate-bounce";
+        endDesc.innerText = "Nita berhasil menyelesaikan petualangan dengan luar biasa!";
+      } else {
+        endTitle.innerText = "GAME OVER 💥";
+        endTitle.className = "pixel-font text-2xl md:text-3xl text-red-500 mb-2 animate-bounce";
+        endDesc.innerText = "Nita kehabisan nyawa dalam petualangan!";
+      }
+      finalScoreEl.innerText = score;
+      endOverlay.classList.remove("hidden");
+    }
+
+    // Deteksi AABB Tabrakan Kotak
+    function checkCollision(r1, r2) {
+      return (
+        r1.x < r2.x + r2.width &&
+        r1.x + r1.width > r2.x &&
+        r1.y < r2.y + r2.height &&
+        r1.y + r1.height > r2.y
+      );
+    }
+
+    // Kontrol Keyboard
+    const keys = {};
+    window.addEventListener("keydown", (e) => {
+      keys[e.code] = true;
+      if (!gameRunning) return;
+      if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
+        nita.jump();
+      }
+    });
+    window.addEventListener("keyup", (e) => {
+      keys[e.code] = false;
+    });
+
+    // Kontrol Tombol Sentuh HP
+    leftBtn.addEventListener("touchstart", () => {nita.vx = -nita.speed;});
+    leftBtn.addEventListener("touchend", () => {nita.vx = 0;});
+    rightBtn.addEventListener("touchstart", () => {nita.vx = nita.speed;});
+    rightBtn.addEventListener("touchend", () => {nita.vx = 0;});
+    jumpBtn.addEventListener("click", () => {nita.jump();});
+
+    // Loop Game Utama
+    function loop() {
+      if (!gameRunning) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Gerakan Keyboard PC
+      if (keys["ArrowLeft"] || keys["KeyA"]) {
+        nita.vx = -nita.speed;
+      } else if (keys["ArrowRight"] || keys["KeyD"]) {
+        nita.vx = nita.speed;
+      } else if (!window.TouchEvent && nita.vx !== 0) {
+        nita.vx = 0;
+      }
+
+      nita.update();
+
+      // Kamera mengikuti Nita
+      cameraX = nita.x - 200;
+      if (cameraX < 0) cameraX = 0;
+
+      // Cek Tabrakan dengan Platform
+      nita.isGrounded = false;
+      for (let p of platforms) {
+        if (
+          nita.x + nita.width > p.x &&
+          nita.x < p.x + p.width &&
+          nita.y + nita.height >= p.y &&
+          nita.y + nita.height <= p.y + 16 &&
+          nita.vy >= 0
+        ) {
+          nita.y = p.y - nita.height;
+          nita.vy = 0;
+          nita.isGrounded = true;
+        }
+      }
+
+      // Gambar Platform & Tanah
+      for (let p of platforms) {
+        ctx.fillStyle = p.type === 'ground' ? "#16a34a" : "#ca8a04";
+        ctx.fillRect(p.x - cameraX, p.y, p.width, p.height);
+        ctx.fillStyle = p.type === 'ground' ? "#15803d" : "#a16207";
+        ctx.fillRect(p.x - cameraX, p.y, p.width, 6); // Rumput / Atas platform
+      }
+
+      // Gambar & Cek Bintang Koleksi
+      for (let s of stars) {
+        if (!s.collected) {
+          ctx.fillStyle = "#facc15";
+          ctx.beginPath();
+          ctx.arc(s.x - cameraX + 12, s.y + 12, 12, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Cek Ambil Bintang
+          if (checkCollision(nita, {x: s.x, y: s.y, width: 24, height: 24})) {
+            s.collected = true;
+            starsCollected++;
+            score += 50;
+            updateHUD();
+
+            // Jika semua bintang terkumpul, menang!
+            if (starsCollected >= stars.length) {
+              endGame(true);
+            }
+          }
+        }
+      }
+
+      // Gambar & Cek Rintangan / Paku
+      for (let obs of obstacles) {
+        ctx.fillStyle = "#dc2626";
+        // Gambar segitiga paku
+        ctx.beginPath();
+        ctx.moveTo(obs.x - cameraX, obs.y + obs.height);
+        ctx.lineTo(obs.x - cameraX + obs.width / 2, obs.y);
+        ctx.lineTo(obs.x - cameraX + obs.width, obs.y + obs.height);
+        ctx.closePath();
+        ctx.fill();
+
+        if (checkCollision(nita, obs)) {
+          loseLife();
+          break;
+        }
+      }
+
+      // Gambar Karakter Nita
+      nita.draw();
+
+      requestAnimationFrame(loop);
+    }
+  </script>
 </body>
 
 </html>
