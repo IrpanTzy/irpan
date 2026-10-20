@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Pertamaku</title>
+    <!-- Menghubungkan ke file CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 1. Menu Navigasi di Bagian Atas -->
+  <nav class="navbar">
+        <div class="logo">MyWebsite</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="tentang.html">Tentang</a></li>
+            <li><a href="#">Kontak</a></li>
+        </ul>
+    </nav>
+
+    <!-- 2. Konten Utama -->
+    <h1>Halo, Dunia!</h1>
+    <p>Selamat datang di website pertama yang saya buat sendiri.</p>
+
+    <!-- 3. Gambar Profil -->
+    <img src="https://picsum.photos/200" alt="Foto Contoh" class="foto-profil">
+
+    <br><br>
+
+    <!-- 4. Tombol Link Eksternal -->
+    <a href="https://google.com" target="_blank">
+        <button>Kunjungi Google</button>
+    </a>
+
+    <!-- 5. Bagian Kartu / Flexbox Layout -->
+    <section class="container-konten">
+        <div class="card">
+            <h3>Belajar HTML</h3>
+            <p>Mengenal struktur dasar halaman website.</p>
+        </div>
+        <div class="card">
+            <h3>Belajar CSS</h3>
+            <p>Mempercantik tampilan web dengan warna dan gaya.</p>
+        </div>
+        <div class="card">
+            <h3>Belajar JavaScript</h3>
+            <p>Membuat website menjadi interaktif dan dinamis.</p>
+        </div>
+    </section>
+
+    <!-- 6. Tombol Interaktif JavaScript -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="sapaPengunjung()">Klik untuk Pesan Interaktif</button>
+    </div>
+
+    <!-- 7. Formulir Kontak -->
+    <section class="form-container">
+        <h2>Hubungi Kami</h2>
+        <form>
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" name="nama" placeholder="Masukkan nama kamu...">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Masukkan email kamu...">
+            </div>
+            
+            <div class="form-group">
+                <label for="pesan">Pesan:</label>
+                <textarea id="pesan" name="pesan" rows="4" placeholder="Tulis pesan kamu di sini..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn-kirim">Kirim Pesan</button>
+        </form>
+    </section>
+
+    <!-- Hubungkan file JavaScript (ditaruh sebelum tag penutup body) -->
+    <script src="script.js"></script>
+</body>
+</html>
